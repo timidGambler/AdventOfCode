@@ -35,6 +35,20 @@ function bashRunRange() {
     echo $sum
 }
 
+function bashRunRange2() {
+    low=${1%-*}
+    high=${1#*-}
+    sum=0
+    p='^([[:digit:]]+)\1+$'
+    for ((i=$low; i <= $high; i++)); do
+        if [[ $i =~ $p ]]; then
+            sum=$(($sum + $i))
+            i=$((i+10))
+        fi
+    done
+    echo $sum
+}
+
 function bashTestRange() {
     sum=`bashRunRange $2`
 
@@ -52,14 +66,14 @@ function bashRunFile() {
     read -rasplitIFS<<< $str
 
     for word in "${splitIFS[@]}"; do
-        sum=$((sum + `bashRunRange $word`))
+        sum=$((sum + `bashRunRange2 $word`))
     done
     IFS=''
 
     echo $sum
 }
 
-function runTests() {
+function runTests1() {
     # just run every provided example, why not
     echo "tests:"
     test "test1" $1 "11-22" 33
@@ -74,8 +88,26 @@ function runTests() {
     echo
 }
 
-# runTests awkTestRange runFile # awk is being too problematic, let's try keeping it in bash...
-#runTests bashRunRange bashRunFile
+function runTests2() {
+    # just run every provided example, why not
+    echo "tests:"
+    test "test1" $1 "11-22" 33
+    test "test2" $1 "95-115" 210
+    test "test3" $1 998-1012 2009
+    test "test4" $1 1188511880-1188511890 1188511885
+    test "test5" $1 222220-222224 222222
+    test "test6" $1 1698522-1698528 $((0))
+    test "test7" $1 446443-446449  446446
+    test "test8" $1 38593856-38593862 38593859
+    test "test9" $1 565653-565659 565656
+    test "test10" $1 824824821-824824827 824824824
+    test "test11" $1 2121212118-2121212124 2121212121
+    test "test12" $2 sample_input.txt 4174379265
+    echo
+}
 
-#echo "final answer:"
-bashRunFile input2.txt
+# runTests awkTestRange runFile # awk is being too problematic, let's try keeping it in bash...
+#runTests2 bashRunRange2 bashRunFile
+
+echo "final answer:"
+bashRunFile input.txt
