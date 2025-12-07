@@ -1,4 +1,8 @@
 NF {
+    part2();
+}
+
+function part1() {
     tens=getBiggestDigitIndex($0, 0, 1)
     #printf "tens=%s\n", substr($0, tens, 1)
     
@@ -7,6 +11,20 @@ NF {
 
     # print the actual output:
     printf "%s%s\n", substr($0, tens, 1), substr($0, ones, 1)
+}
+
+function part2() {
+    startIndex=0
+    for (j = 1; j <= 12; j++) {
+        indices[j]=getBiggestDigitIndex($0, startIndex, 12-j)
+        startIndex=indices[j]
+        #printf "%s -> j=%s, index=%s & v=%s\n", $0, j, indices[j], substr($0, indices[j], 1)
+    }
+
+    for (j = 1; j <= 12; j++) {
+        printf "%s", substr($0, indices[j], 1)
+    }
+    print ""
 }
 
 function getBiggestDigitIndex(str, startIndex, skipLast) {

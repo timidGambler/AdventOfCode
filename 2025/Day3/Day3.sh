@@ -20,17 +20,28 @@ function test() { # testname, function, func param, expected result
 function runTests1() {
     # just run every provided example, why not
     echo "tests:"
-    test "test1" findMaxJoltage "123" 23
-    test "test2" findMaxJoltage "987654321111111" 98
-    test "test3" findMaxJoltage "811111111111119" 89
-    test "test4" findMaxJoltage "234234234234278" 78
-    test "test5" findMaxJoltage "818181911112111" 92
-    test "test6" findMaxJoltageFile "eric_input.txt" 357
+    test "test1" findMaxJoltage "987654321111111" 98
+    test "test2" findMaxJoltage "811111111111119" 89
+    test "test3" findMaxJoltage "234234234234278" 78
+    test "test4" findMaxJoltage "818181911112111" 92
+    test "test5" findMaxJoltageFile "eric_input.txt" 357
     
     echo
 }
 
-runTests1
+function runTests2() {
+    # just run every provided example, why not
+    echo "tests:"
+    test "test1" findMaxJoltage "987654321111111" 987654321111
+    test "test2" findMaxJoltage "811111111111119" 811111111119
+    test "test3" findMaxJoltage "234234234234278" 434234234278
+    test "test4" findMaxJoltage "818181911112111" 888911112111
+    test "test5" findMaxJoltageFile "eric_input.txt" 3121910778619
+    
+    echo
+}
+
+runTests2
 
 echo "final answer:"
 findMaxJoltageFile input.txt
