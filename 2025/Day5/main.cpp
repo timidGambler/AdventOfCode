@@ -66,6 +66,54 @@ long freshIngredientCount(const char* fileName)
     return freshCount;
  }
 
+
+long freshIDCount(const char* fileName)
+{
+    std::ifstream infile(fileName);
+
+    int delimIndex;
+    std::string line;
+    std::vector<std::tuple<long, long>>* freshRanges = new std::vector<std::tuple<long, long>>();
+
+    while (std::getline(infile, line))
+    {
+        delimIndex = line.find('-');
+        if (delimIndex > 0)
+        {
+            freshRanges->push_back(
+                {
+                    std::stol(line.substr(0, delimIndex)),
+                    std::stol(line.substr(delimIndex + 1))
+                });
+        }
+    }
+    std::sort(freshRanges->begin(), freshRanges->end(), llRangeSort);
+
+    long idCount = 0;
+    long currEnd = 0;
+    for (auto itor = freshRanges->begin(); itor < freshRanges->end(); itor++)
+    {
+        if (currEnd < get<0>(*itor) && currEnd < get<1>(*itor))
+        {
+            // cout << "New range: " << "+" << get<1>(*itor) - get<0>(*itor) << " from " << get<0>(*itor) << "-" << get<1>(*itor) << endl;
+            idCount += get<1>(*itor) - get<0>(*itor) + 1;
+            currEnd = get<1>(*itor);
+        }
+        else if (currEnd <= get<1>(*itor))
+        {
+            // cout << "Partial range: " << "+" << get<1>(*itor) - currEnd << " from " << currEnd << "-" << get<1>(*itor) << endl;
+            idCount += get<1>(*itor) - currEnd;
+            currEnd = get<1>(*itor);
+        }        
+    }
+
+    // clean up
+    delete freshRanges;
+
+    return idCount;
+}
+
+
 template <typename T>
 bool test(const char* testName, T v1, T v2)
 {
@@ -80,8 +128,10 @@ bool test(const char* testName, T v1, T v2)
 // g++ ./main.cpp -o out.exe && ./out.exe
 int main()
 {    
-    test("Test1", freshIngredientCount("eric_input.txt"), 3l);
+    // test("Test1", freshIngredientCount("eric_input.txt"), 3l);
+    // cout << "Final output: " << freshIngredientCount("input.txt") << endl;
 
-    cout << "Final output: " << freshIngredientCount("input.txt") << endl;
+    test("Test1", freshIDCount("eric_input.txt"), 14l);
+    cout << "Final output: " << freshIDCount("input.txt") << endl;
     return 0;
 }
